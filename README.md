@@ -17,4 +17,20 @@ It also provides:
 Notes: 
 
 * Word frequencies use standard nlp preprocessing procedures, such as stopword removal and non-ASCII removal.
-* Currently, only [statuses/user_timeline](https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline) API is supported.
+
+* The processing module removes all non-ASCII characters, so tweets with a lot of unicode will not have an accurate result for word frequencies. 
+
+  
+
+Required libraries:
+
+Install with: `pip install -r requirements.txt`
+
+Non-standard libraries are: `nltk`, `tqdm`, and `tweepy`. 
+
+Note: After downloading `nltk`, you will need to open a `python` console and run:
+```python
+import nltk
+nltk.download('stopwords')
+nltk.download('wordnet')
+```
