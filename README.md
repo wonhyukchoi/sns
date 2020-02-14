@@ -1,4 +1,4 @@
-# twitter_user
+# _Twitter User_
 ### Lightweight, naive analysis of twitter data on one handle.
 
 ![](timeseries.png)
