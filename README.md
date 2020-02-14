@@ -1,6 +1,16 @@
 # twitter_user
 ### Lightweight, naive analysis of twitter data on one handle.
 
+![](timeseries.png)
+
+![](tweet_len.png)
+
+![](tweet_time.png)
+
+![](retweet_count.png)
+
+![](wordfreq.png)
+
 For one user, this lightweight analysis provides:
 
 * Retweets vs native tweets bar plot
