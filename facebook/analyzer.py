@@ -1,8 +1,12 @@
 from utils import json_files_to_list
 from datetime import datetime
 from matplotlib import pyplot as plt
+from utils import MarkdownGenerator
 
 
+# TODO: add graphing
+# TODO: add nlp
+# TODO: add auto-generate tables in markdown??
 class FbMessageAnalyzer:
     def __init__(self):
         self._messages = []
@@ -27,6 +31,14 @@ class FbMessageAnalyzer:
             datetime_list += datetime.fromtimestamp(timestamp)
         return datetime_list
 
+    def generate_graphs(self):
+        raise NotImplementedError
+
+    def write_markdown(self, file_name: str):
+        md_maker = MarkdownGenerator()
+        md_maker.write(file_name=file_name)
+        raise NotImplementedError
+
     def _parse_messages(self, sender='sender_name',
                         content='content') -> None:
         for msg in self._messages:
@@ -41,11 +53,3 @@ class FbMessageAnalyzer:
     def _parse_time(self, time='timestamp_ms'):
         for msg in self._messages:
             self._time += msg[time]
-
-
-if __name__ == "__main__":
-    import os
-    json_path = os.path.join(os.getcwd(), 'data')
-
-    analyzer = FbMessageAnalyzer()
-    analyzer.load_from_dir(path=json_path)
