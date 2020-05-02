@@ -5,6 +5,12 @@ from collections import Counter
 from wrappers import timer
 
 
+"""
+preprocess took 40.40 seconds 
+lemmatize took 3.93 seconds 
+"""
+
+
 class TextPreprocessor:
     def __init__(self, lang='eng'):
         self._lang = lang.strip().lower()
@@ -38,7 +44,6 @@ class TextPreprocessor:
                                if len(word) >= min_word_len)
         return pruned_text
 
-    @timer
     def most_freq(self, text: str, preprocess=True, lemmatize=True, max_num=None,
                   ascii_only=True, rm_stopword=True, min_word_len=2):
 
