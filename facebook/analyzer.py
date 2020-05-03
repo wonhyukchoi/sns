@@ -38,6 +38,10 @@ class FbMessageAnalyzer:
                              rm_stopword=rm_stopword,
                              min_word_len=min_word_len)
 
+    def make_graphs(self,time_series='time_series',
+                    sender_ratio='message_ratio'):
+        raise NotImplementedError
+
     def count_by_person(self) -> dict:
         return {sender: len(messages) for sender, messages
                 in self._sender_messages}
