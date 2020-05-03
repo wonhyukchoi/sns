@@ -6,7 +6,7 @@ if __name__ == "__main__":
     output_name = 'facebook.md'
 
     analyzer = FbMessageAnalyzer()
-    analyzer.load_from_dir(path=json_path)
+    analyzer.parse_data(path=json_path)
     analyzer.write_markdown(file_name=output_name)
 
     raise NotImplementedError

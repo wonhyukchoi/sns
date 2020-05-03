@@ -1,41 +1,27 @@
-from string import punctuation
-from nltk.corpus import stopwords
+import re
+from nltk import corpus
 from nltk.stem import WordNetLemmatizer
 from collections import Counter
-from wrappers import timer
-
-
-"""
-preprocess took 40.40 seconds 
-lemmatize took 3.93 seconds 
-"""
 
 
 class TextPreprocessor:
-    def __init__(self, lang='eng'):
+    def __init__(self, lang='eng', stopwords=None):
         self._lang = lang.strip().lower()
         if self._lang != 'eng':
             raise NotImplementedError
 
-    @timer
+        self._stopwords = stopwords
+
     def preprocess(self, text: str, ascii_only=True, rm_stopword=True):
         if ascii_only:
-            text = "".join(char for char in text if ord(char) < 128)
-
-        text = "".join(char for char in text if char not in punctuation)
+            text = self._ascii_only(text)
 
         if rm_stopword:
-            if self._lang != 'eng':
-                raise NotImplementedError
-
-            word_list = text.split()
-            text = " ".join(word for word in word_list
-                            if word not in stopwords.words('english'))
+            text = self._rm_stopword(text)
 
         return text
 
     @staticmethod
-    @timer
     def lemmatize(text: str, min_word_len=2):
         lemmatizer = WordNetLemmatizer()
         word_list = text.split()
@@ -56,3 +42,30 @@ class TextPreprocessor:
         word_list = text.split()
         freq_words = Counter(word_list).most_common(max_num)
         return freq_words
+
+    @staticmethod
+    def _ascii_only(text: str):
+        text = re.sub(r'[^a-zA-Z ]', '', text)
+        text = re.sub(r'\s\s+', ' ', text)
+        return text
+
+    def _rm_stopword(self, text: str):
+        """
+        This may take a while.
+        :param text: Any string to strip
+        :return:
+        """
+        if self._lang != 'eng':
+            raise NotImplementedError
+        else:
+            stopwords = corpus.stopwords.words('english')
+
+        if self._stopwords:
+            stopwords += self._stopwords
+
+        word_list = [word.lower() for word in text.split()]
+
+        text = " ".join(word for word in word_list
+                        if word not in stopwords)
+
+        return text

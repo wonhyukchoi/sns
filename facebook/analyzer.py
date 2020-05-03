@@ -8,7 +8,7 @@ from utils import MarkdownGenerator
 # TODO: add graphing
 # TODO: add auto-generate tables in markdown??
 class FbMessageAnalyzer:
-    def __init__(self):
+    def __init__(self, lang='eng', stopwords=None):
         self._senders = set()
         self._messages = []
         self._messages_text = []
@@ -17,12 +17,26 @@ class FbMessageAnalyzer:
         self._sender_freq_words = {}
         self._time = []
 
-    def load_from_dir(self, path: str, sender='sender_name',
-                      content='content', time='timestamp_ms') -> None:
+        lang = lang.lower().strip()
+        if lang == 'english':
+            lang = 'eng'
+        self._lang = lang
+        self._stopwords = stopwords
+
+    def load_json_in_dir(self, path: str):
         self._messages = json_files_to_list(path=path)
+
+    def parse_data(self, sender='sender_name',
+                   content='content', time='timestamp_ms',
+                   preprocess=True, lemmatize=True,
+                   max_num=None, ascii_only=True,
+                   rm_stopword=True, min_word_len=2) -> None:
         self._parse_messages(sender=sender, content=content)
         self._parse_time(time_type=time)
-        self._get_freq_words()
+        self._get_freq_words(preprocess=preprocess, lemmatize=lemmatize,
+                             max_num=max_num, ascii_only=ascii_only,
+                             rm_stopword=rm_stopword,
+                             min_word_len=min_word_len)
 
     def count_by_person(self) -> dict:
         return {sender: len(messages) for sender, messages
@@ -42,7 +56,7 @@ class FbMessageAnalyzer:
             else:
                 text = '<other>'
 
-            self._sender_messages.\
+            self._sender_messages. \
                 setdefault(msg[sender], []).append(text)
             self._messages_text.append(text)
 
@@ -58,12 +72,26 @@ class FbMessageAnalyzer:
             timestamp = msg[time_type] / timestamp_div
             self._time.append(datetime.fromtimestamp(timestamp))
 
-    def _get_freq_words(self):
-        text_preprocessor = TextPreprocessor()
+    # FIXME: refactor
+    def _get_freq_words(self, preprocess=True, lemmatize=True,
+                        max_num=None, ascii_only=True, rm_stopword=True,
+                        min_word_len=2):
+        text_preprocessor = TextPreprocessor(lang=self._lang,
+                                             stopwords=self._stopwords)
+
         self._freq_words = text_preprocessor.most_freq(
-            " ".join(self._messages_text))
+            " ".join(self._messages_text),
+            preprocess=preprocess, lemmatize=lemmatize, max_num=max_num,
+            ascii_only=ascii_only, rm_stopword=rm_stopword,
+            min_word_len=min_word_len)
+
         for sender, messages in self._sender_messages.items():
-            sender_freq = text_preprocessor.most_freq(" ".join(messages))
+            sender_freq = text_preprocessor.most_freq(
+                " ".join(messages),
+                preprocess=preprocess, lemmatize=lemmatize, max_num=max_num,
+                ascii_only=ascii_only, rm_stopword=rm_stopword,
+                min_word_len=min_word_len)
+
             self._sender_freq_words[sender] = sender_freq
 
     @staticmethod
