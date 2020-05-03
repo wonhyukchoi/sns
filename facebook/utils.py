@@ -14,8 +14,9 @@ def json_files_to_list(path, msg='messages') -> list:
 
 
 class MarkdownGenerator:
-    def __init__(self):
-        self._md = None
+    def __init__(self, title='TITLE'):
+        self._md = ''
+        self._md += '\n# {}\n'.format(title)
 
     def add_image(self, image: str):
         self._md += '\n![]({})'.format(image)
@@ -29,3 +30,9 @@ class MarkdownGenerator:
     def write(self, file_name=''):
         with open(file_name, 'w', encoding='utf-8') as f:
             f.write(self._md)
+
+
+if __name__ == "__main__":
+    md = MarkdownGenerator()
+    md.add_image('test.png')
+    md.write(file_name='test.md')
