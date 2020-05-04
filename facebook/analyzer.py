@@ -5,7 +5,6 @@ from nlp import TextPreprocessor
 from utils import MarkdownGenerator
 
 
-# TODO: add graphing
 # TODO: add auto-generate tables in markdown??
 class FbMessageAnalyzer:
     def __init__(self, lang='eng', stopwords=None):
@@ -33,10 +32,10 @@ class FbMessageAnalyzer:
                    rm_stopword=True, min_word_len=2) -> None:
         self._parse_messages(sender=sender, content=content)
         self._parse_time(time_type=time)
-        # self._get_freq_words(preprocess=preprocess, lemmatize=lemmatize,
-        #                      max_num=max_num, ascii_only=ascii_only,
-        #                      rm_stopword=rm_stopword,
-        #                      min_word_len=min_word_len)
+        self._get_freq_words(preprocess=preprocess, lemmatize=lemmatize,
+                             max_num=max_num, ascii_only=ascii_only,
+                             rm_stopword=rm_stopword,
+                             min_word_len=min_word_len)
 
     def make_graphs(self, time_series='time_series',
                     sender_ratio='message_ratio'):
