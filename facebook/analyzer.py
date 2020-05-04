@@ -37,8 +37,8 @@ class FbMessageAnalyzer:
                              rm_stopword=rm_stopword,
                              min_word_len=min_word_len)
 
-    def make_graphs(self, time_series='time_series',
-                    sender_ratio='message_ratio'):
+    def make_graphs(self, time_series='time_series.png',
+                    sender_ratio='message_ratio.png'):
 
         message_freq = {sender: len(messages) for
                         sender, messages in
@@ -123,3 +123,15 @@ class FbMessageAnalyzer:
         plt.ylabel('Num. messages')
         plt.xlabel('Time')
         plt.savefig(save_name)
+
+    @property
+    def senders(self):
+        return self._senders
+
+    @property
+    def freq_words(self):
+        return self._freq_words
+
+    @property
+    def sender_freq_words(self):
+        return self._sender_freq_words

@@ -24,23 +24,14 @@ class MarkdownGenerator:
     def add_text(self, text: str):
         self._md += '\n' + text
 
-    def add_table(self, data: dict):
+    def add_table(self, data: list, column=('word', 'frequency')):
         divisor = ' | '
-        columns = data.keys()
-        header = ['----'] * len(columns)
+        header = ['----'] * len(column)
 
-        column_data = list(data.values())
-        num_rows = len(column_data[0])
-        rows = []
-        for i in range(num_rows):
-            ith_row = []
-            for j in range(len(columns)):
-                ith_row.append(str(column_data[j][i]))
-            rows.append(ith_row)
-
-        table = divisor.join(columns) + '\n'
+        table = '\n' + divisor.join(column) + '\n'
         table += divisor.join(header) + '\n'
-        for each_row in rows:
+        for each_row in data:
+            each_row = tuple(str(item) for item in each_row)
             table += divisor.join(each_row) + '\n'
 
         self._md += table
@@ -48,10 +39,3 @@ class MarkdownGenerator:
     def write(self, file_name=''):
         with open(file_name, 'w', encoding='utf-8') as f:
             f.write(self._md)
-
-
-if __name__ == "__main__":
-    md = MarkdownGenerator()
-    test_data = {'a': [1, 2], 'b': [3, 4], 'c': [5, 6]}
-    md.add_table(test_data)
-    md.write('test.md')
