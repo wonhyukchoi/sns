@@ -33,10 +33,23 @@ class FbMessageAnalyzer:
                    rm_stopword=True, min_word_len=2) -> None:
         self._parse_messages(sender=sender, content=content)
         self._parse_time(time_type=time)
-        self._get_freq_words(preprocess=preprocess, lemmatize=lemmatize,
-                             max_num=max_num, ascii_only=ascii_only,
-                             rm_stopword=rm_stopword,
-                             min_word_len=min_word_len)
+        # self._get_freq_words(preprocess=preprocess, lemmatize=lemmatize,
+        #                      max_num=max_num, ascii_only=ascii_only,
+        #                      rm_stopword=rm_stopword,
+        #                      min_word_len=min_word_len)
+
+    def make_graphs(self, time_series='time_series',
+                    sender_ratio='message_ratio'):
+
+        message_freq = {sender: len(messages) for
+                        sender, messages in
+                        self._sender_messages.items()}
+        self._piechart(data=message_freq,
+                       save_name=sender_ratio)
+
+        plt.clf()
+
+        self._hist(data=self._time, save_name=time_series)
 
     def count_by_person(self) -> dict:
         return {sender: len(messages) for sender, messages
@@ -96,9 +109,18 @@ class FbMessageAnalyzer:
 
     @staticmethod
     def _piechart(data: dict, save_name: str):
-        plt.pie(data)
+        labels = data.keys()
+        sizes = data.values()
+        plt.title('Message ratio')
+        plt.pie(sizes, labels=labels, shadow=True, startangle=90,
+                autopct='%1.1f%%')
         plt.savefig(save_name)
 
     @staticmethod
-    def _linechart(data: list, save_name: str):
-        raise NotImplementedError
+    def _hist(data: list, save_name: str,
+              bar_color='#008080', line_color='w'):
+        plt.hist(data, color=bar_color, ec=line_color)
+        plt.title('Message frequency over time')
+        plt.ylabel('Num. messages')
+        plt.xlabel('Time')
+        plt.savefig(save_name)
