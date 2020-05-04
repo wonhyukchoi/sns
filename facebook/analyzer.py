@@ -32,7 +32,7 @@ class FbMessageAnalyzer:
                    max_num=None, ascii_only=True,
                    rm_stopword=True, min_word_len=2) -> None:
         self._parse_messages(sender=sender, content=content)
-        # self._parse_time(time_type=time)
+        self._parse_time(time_type=time)
         # self._get_freq_words(preprocess=preprocess, lemmatize=lemmatize,
         #                      max_num=max_num, ascii_only=ascii_only,
         #                      rm_stopword=rm_stopword,
@@ -47,7 +47,9 @@ class FbMessageAnalyzer:
         self._piechart(data=message_freq,
                        save_name=sender_ratio)
 
-        return time_series
+        plt.clf()
+
+        self._hist(data=self._time, save_name=time_series)
 
     def count_by_person(self) -> dict:
         return {sender: len(messages) for sender, messages
@@ -115,5 +117,10 @@ class FbMessageAnalyzer:
         plt.savefig(save_name)
 
     @staticmethod
-    def _linechart(data: list, save_name: str):
-        raise NotImplementedError
+    def _hist(data: list, save_name: str,
+              bar_color='#008080', line_color='w'):
+        plt.hist(data, color=bar_color, ec=line_color)
+        plt.title('Message frequency over time')
+        plt.ylabel('Num. messages')
+        plt.xlabel('Time')
+        plt.savefig(save_name)
